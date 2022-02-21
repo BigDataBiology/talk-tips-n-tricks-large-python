@@ -62,5 +62,26 @@ with gzip.open('output.txt.gz', 'wt', compresslevel=0) as out:
 
 ---
 
-## 3: YOUR TIP (_YOUR NAME_)
+## 3: Use datatable to read large table into memory (_Hui_)
+
+## BAD
+
+```python
+import pandas as pd
+df = pd.read_table('input.tsv', sep='\t')
+```
+
+## GOOD
+
+```python
+import datatable as dt
+df = dt.fread('input.tsv', sep='\t')
+```
+
+## WHY
+
+1. `datatable` uses multi-threading for file reading.
+2. `datatable` provides `to_pandas` API so that you can do downstream analysis using pandas.
+3.  Depends on how many cores your machine has, this could save you 50 ~ 70% of time.
+
 
