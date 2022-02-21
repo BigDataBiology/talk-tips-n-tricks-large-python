@@ -183,5 +183,27 @@ df = dt.fread('input.tsv', sep='\t')
 2. `datatable` provides `to_pandas` API so that you can do downstream analysis using pandas.
 3.  Depends on how many cores your machine has, this could save you 50 ~ 70% of time.
 
-## 5: YOUR TIP (_YOUR NAME_)
+## 5 Use Progress bar to monitor the progress and see whether your loop is becoming slower and slower
+
+```python
+from tqdm import tqdm, trange
+
+
+# use trange instead of range, you get a progress bar
+for i in trange(10**6):
+	...
+
+
+# add tqdm(), you get a progress bar
+for item in tqdm(items):
+	...
+```
+
+## WHY
+
+1. The progress bar looks like this: `76%|████████████████████████        | 7568/10000 [00:33<00:10, 229.00it/s]`
+2. You're the first user of your script. If you have experiences strugling to wait for hours/days to get a feedback from your script, try this.
+3. Sometimes your loop is becoming slower and slower as iteration and you don't know. With the progress bar you'll see it.
+
+## 6: YOUR TIP (_YOUR NAME_)
 
