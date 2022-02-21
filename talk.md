@@ -1,6 +1,5 @@
 # Tips &amp; tricks for large-scale data processing in Python
 
-
 ---
 
 ## 1: Use [Jug](https://jug.rtfd.io/) (_Luis_)
@@ -205,5 +204,72 @@ for item in tqdm(items):
 2. You're the first user of your script. If you have experiences strugling to wait for hours/days to get a feedback from your script, try this.
 3. Sometimes your loop is becoming slower and slower as iteration and you don't know. With the progress bar you'll see it.
 
-## 6: YOUR TIP (_YOUR NAME_)
+---
 
+## 6: Sparse matrix to reduce the memory usage (_Shaojun_)
+
+## Generating the graph
+
+```python
+embedding_matrix = kneighbors_graph(...)
+kmer_matrix = kneighbors_graph(...)
+kmer_matrix.eliminate_zeros()
+kmer_matrix.data.fill(1.)
+embedding_matrix = embedding_matrix.multiply(kmer_matrix)
+embedding_matrix.eliminate_zeros()
+```
+
+## Finding the edges in the graph
+
+```python
+embedding_matrix.data[embedding_matrix.data <= 1e-6] = 0
+X, Y, V = sparse.find(embedding_matrix)
+above_diag = Y > X
+X = X[above_diag]
+Y = Y[above_diag]
+edges = [(x,y) for x,y in zip(X, Y)]
+edge_weights = V[above_diag]
+```
+
+---
+
+## 7: numexpr (_Shaojun_)
+
+```python
+a = np.random.rand(1e6)
+b = np.random.rand(1e6)
+timeit 2*a + 3*b
+timeit ne.evaluate("2*a + 3*b")
+```
+
+```python
+res = ne.evaluate('(log(v1) - log(v2))/2 + ( (m1 - m2)**2 + v2 ) / ( 2 * v1 ) - half',
+                    {
+                     'v1': v1,
+                     'v2': v2,
+                     'm1': m1,
+                     'm2': m2,
+                     'half': np.float32(0.5),
+                     })
+```
+
+---
+
+## 8: tempfile.TemporaryDirectory() (_Shaojun_)
+
+```python
+with tempfile.TemporaryDirectory() as tdir:
+		output = os.path.join(tdir, 'output.fasta')
+		...
+```
+
+## Set the output path of the temporary directory
+
+```python
+with tempfile.TemporaryDirectory(tdir = tmpdir) as tdir:
+		...
+```
+or
+```python
+os.environ['TMPDIR'] = tmpdir
+```
