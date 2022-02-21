@@ -62,7 +62,7 @@ with gzip.open('output.txt.gz', 'wt', compresslevel=0) as out:
 
 ---
 
-# 3: Change traditional thinking (_Yiqian_)
+## 3: Consider time complexity (_Yiqian_)
 ## Question purpose
 
 **QUERY** dataset contains millions of smORFs.
