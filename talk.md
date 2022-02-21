@@ -62,11 +62,8 @@ with gzip.open('output.txt.gz', 'wt', compresslevel=0) as out:
 ---
 
 ## 3: Consider time complexity (_Yiqian_)
-## Question purpose
 
-**QUERY** dataset contains millions of smORFs.
-
-Many **dbin** dataset contains very short peptides(file size diverses from 1M to 500M).
+**QUERY** dataset contains millions of smORFs. Many **dbin** dataset contains very short peptides(file size diverses from 1M to 500M).
 
 We want to find exact match of pepetides against smORFs.
 
@@ -80,6 +77,8 @@ def dbsearch(dbin,query):
             if (len(seq) >= len(hash_string)) and (hash_string in qstr):
                 ...
 ```
+
+---
 
 ### Example:
 **QUERY**:
@@ -100,6 +99,7 @@ If CDEF is a substring of ABCDEFGHIJKLMN and OPQRSTUVWXYZ ...
 IF XYZ is a substring of ABCDEFGHIJKLMN and OPQRSTUVWXYZ ... 
 ...
 
+
 ### Problem:
 If **QUERY** has n sequences,**dbin** has m sequences.
 
@@ -108,6 +108,8 @@ Time complexity is O(n×m).
 Running time depends on how big the `QUERY` dataset is and the `dbin` dataset is. 
 
 It will take several minutes when `dbin` dataset is 1Mb.But it will take too long to run when `dbin` dataset is 500Mb. 
+
+---
 
 ## Work well for big datasets
 
@@ -122,6 +124,8 @@ def dbsearch(dbin,query,db_min,db_max):
                        ...
 ```
 
+---
+
 ### Example:
 **QUERY**:
 ABCDEFGHIJKLMN,
@@ -134,10 +138,8 @@ XYZ,
 IJKLMN
 ...
 
-Loop each sequence in `QUERY` and split it into substrings according to min length and max length of `dbin` sequences.
-
-Eg.
-min length of `dbin` = 3,max length of `dbin` = 6
+Loop each sequence in `QUERY` and split it into substrings according to min length and max length of `dbin` sequences
+(_eg._, min length of `dbin` = 3,max length of `dbin` = 6)
 
 `QUERY` seq = ABCDEFGHIJKLMN,split it into:
 
@@ -150,6 +152,9 @@ ABCDE BCDEF...
 ABCDEF BCDEFG...
 
 Then find if each substring is in `dbin` `set`. If so,it means this substring(the same peptides) in `dbin` is a substring of this sequence in `QUERY`.
+
+---
+
 
 ### Solve problem
 If **QUERY** has n sequences,**dbin** has m sequences.
