@@ -183,7 +183,7 @@ df = dt.fread('input.tsv', sep='\t')
 2. `datatable` provides `to_pandas` API so that you can do downstream analysis using pandas.
 3.  Depends on how many cores your machine has, this could save you 50 ~ 70% of time.
 
-## 5 Use Progress bar to monitor the progress and see whether your loop is becoming slower and slower
+## 5 Use Progress bar to see whether your loop is becoming slower and slower
 
 ```python
 from tqdm import tqdm, trange
