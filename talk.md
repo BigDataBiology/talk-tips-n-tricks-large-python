@@ -165,6 +165,20 @@ Running time only depends on how big the 'QUERY' dataset is.
 
 ---
 
+## Basic costs in Python
+
+
+```python
+if elem in container:
+   ...
+```
+
+is `O(N)` if `container` is a list, but `O(1)` if `container` is a
+`set`/`dict`
+
+
+---
+
 ## 4: Use datatable to read large table into memory (_Hui_)
 
 ## BAD
