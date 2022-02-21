@@ -62,7 +62,106 @@ with gzip.open('output.txt.gz', 'wt', compresslevel=0) as out:
 
 ---
 
-## 3: Use datatable to read large table into memory (_Hui_)
+# 3: Change traditional thinking (_Yiqian_)
+## Question purpose
+
+**QUERY** dataset contains millions of smORFs.
+
+Many **dbin** dataset contains very short peptides(file size diverses from 1M to 500M).
+
+We want to find exact match of pepetides against smORFs.
+
+
+## Works very well for small datasets, but becomes too slow at scale
+
+```python
+def dbsearch(dbin,query):
+    for ID,seq in fasta_iter(query):
+        for hash_string in dbin:
+            if (len(seq) >= len(hash_string)) and (hash_string in qstr):
+                ...
+```
+
+### Example:
+**QUERY**:
+ABCDEFGHIJKLMN,
+OPQRSTUVWXYZ
+...
+
+**dbin**:
+CDEF,
+XYZ,
+IJKLMN
+...
+
+Two layer `for` cycle to find：
+
+If CDEF is a substring of ABCDEFGHIJKLMN and OPQRSTUVWXYZ ... 
+
+IF XYZ is a substring of ABCDEFGHIJKLMN and OPQRSTUVWXYZ ... 
+...
+
+### Problem:
+If **QUERY** has n sequences,**dbin** has m sequences.
+
+Time complexity is O(n×m).
+
+Running time depends on how big the `QUERY` dataset is and the `dbin` dataset is. 
+
+It will take several minutes when `dbin` dataset is 1Mb.But it will take too long to run when `dbin` dataset is 500Mb. 
+
+## Work well for big datasets
+
+```python
+def dbsearch(dbin,query,db_min,db_max):
+    for ID,seq in fasta_iter(query):
+        for i in range(db_min,db_max+1):
+            if len(seq) >= i:
+                for j in range(0,len(seq)-i+1):
+                    qstr = seq[j:j+i]
+                    if qstr in dbin:
+                       ...
+```
+
+### Example:
+**QUERY**:
+ABCDEFGHIJKLMN,
+OPQRSTUVWXYZ
+...
+
+**dbin**:
+CDEF,
+XYZ,
+IJKLMN
+...
+
+Loop each sequence in `QUERY` and split it into substrings according to min length and max length of `dbin` sequences.
+
+Eg.
+min length of `dbin` = 3,max length of `dbin` = 6
+
+`QUERY` seq = ABCDEFGHIJKLMN,split it into:
+
+BCD CDE DEF EFG FGH GHI HIJ IJK JKL KLM LMN
+
+ABCD BCDE CDEF...
+
+ABCDE BCDEF...
+
+ABCDEF BCDEFG...
+
+Then find if each substring is in `dbin` `set`. If so,it means this substring(the same peptides) in `dbin` is a substring of this sequence in `QUERY`.
+
+### Solve problem
+If **QUERY** has n sequences,**dbin** has m sequences.
+
+Time complexity is like O(n)? Because seaching in a `set` is O(1)
+
+Running time only depends on how big the 'QUERY' dataset is.
+
+---
+
+## 4: Use datatable to read large table into memory (_Hui_)
 
 ## BAD
 
@@ -84,4 +183,5 @@ df = dt.fread('input.tsv', sep='\t')
 2. `datatable` provides `to_pandas` API so that you can do downstream analysis using pandas.
 3.  Depends on how many cores your machine has, this could save you 50 ~ 70% of time.
 
+## 5: YOUR TIP (_YOUR NAME_)
 
