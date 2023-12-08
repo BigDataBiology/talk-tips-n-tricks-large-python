@@ -292,3 +292,22 @@ or
 ```python
 os.environ['TMPDIR'] = tmpdir
 ```
+
+
+## 9: Understand a regular expression (_Anna_)
+
+Regular expressions (regex) are characters that define a search pattern. They are used for string manipulation, such as extracting or modifying text.
+I use https://regex101.com/ to understand and test easily the regular expression with each particular case.
+
+An example, extracting the mOTUs code from the mOTUs results table:
+
+```python
+print(motus.head())
+
+index                                               SAMEA4689043  ...  SAMEA4546741
+Abiotrophia defectiva [ref_mOTU_v25_04788]                    40  ...            22
+Absiella dolichum [ref_mOTU_v25_03694]                       142  ...             8
+Acaricomes phytoseiuli [ref_mOTU_v25_06702]                    1  ...           287   
+
+motus['motus_code'] = motus['index'].str.extract('\[(.*?)\]')
+```
