@@ -477,6 +477,7 @@ for seq in fasta_sequences:
 #Needs two input files: an assembly fasta file and a text file with the contig IDs of interest
 
 #Run as follows:
+
 ```python file_name.py input.1.fastafile.fasta input.file.2.with.contigs.ofinterest.txt```
 
 
