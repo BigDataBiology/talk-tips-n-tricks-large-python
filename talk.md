@@ -432,5 +432,24 @@ def fasta_iter(fname, full_header=False):
 for h, seq in fasta_iter(fasta_path):
 	...
 ```
+---
 
+## 13: pysam for manipulation of SAM and BAM files (_Vedanth_)
+
+[`pysam`](https://pysam.readthedocs.io/en/latest/api.html) provides functionalities to read, write and manipulate SAM and BAM files.
+
+For example,
+```python
+import pysam
+
+# Read SAM/BAM file
+samfile = pysam.AlignmentFile("alignment.bam", "rb")
+
+# Iterate over alignments
+for read in samfile.fetch():
+    # Access alignment information
+    print(read.query_name, read.reference_name, read.reference_start)
+
+```
+---
 
