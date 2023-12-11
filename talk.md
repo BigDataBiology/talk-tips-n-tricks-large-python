@@ -332,4 +332,41 @@ for chunk in pd.read_csv('very-large-table.xz', \
     ...
 ```
 
+## 11: Generate index file and use .npy file to quickly select data (_Yiqian_)
+Original file
+```
+GMSC10.100AA.000_000_000    d__Archaea
+GMSC10.100AA.000_000_001    Unknown
+GMSC10.100AA.000_000_002    d__Archaea;p__Aenigmatarchaeota;c__Aenigmatarchaeia
+```
 
+Index file
+```
+0   Unknown
+1   d__Archaea
+2   d__Archaea;p__Aenigmatarchaeota;c__Aenigmatarchaeia
+3   d__Archaea;p__Aenigmatarchaeota;c__Aenigmatarchaeia;o__Aenigmatarchaeales;f__Aenigmatarchaeaceae;g__Aenigmatarchaeum;s__Aenigmatarchaeum subterraneum
+4   d__Archaea;p__Aenigmatarchaeota;c__Aenigmatarchaeia;o__CG10238-14
+5   d__Archaea;p__Aenigmatarchaeota;c__Aenigmatarchaeia;o__CG10238-14;f__CG10238-14
+```
+
+Index formatted file `GMSC10.100AA.habitat.idx.tsv`
+```
+GMSC10.100AA.000_000_000    1
+GMSC10.100AA.000_000_001    0
+GMSC10.100AA.000_000_002    2
+```
+
+Generate .npy file
+```python
+import numpy as np
+df = np.loadtxt('GMSC10.100AA.habitat.idx.tsv',dtype=int, usecols=(1))
+np.save('GMSC10.100AA.habitat.npy',df)
+```
+
+Use .npy file
+```
+import numpy as np
+tax = np.load('GMSC10.100AA.habitat.npy',mmap_mode='r')
+tax[2]
+```
