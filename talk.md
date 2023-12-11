@@ -455,7 +455,7 @@ for read in samfile.fetch():
 
 **#14: Extracting specific contigs from a metagenome assembly (_JP_)**
 
-from Bio import SeqIO
+```from Bio import SeqIO
 import sys
 fasta_file = sys.argv[1] #fasta file
 number_file = sys.argv[2] #ID file
@@ -470,13 +470,13 @@ fasta_sequences = SeqIO.parse(open(fasta_file),'fasta')
 end = False
 for seq in fasta_sequences:
     if seq.id in wanted:
-        print (">" + seq.id +"\n" + seq.seq)
+        print (">" + seq.id +"\n" + seq.seq)```
 
 #Save as .py file
 #Requires Biopython to run
 #Needs two input files: an assembly fasta file and a text file with the contig IDs of interest
 
 #Run as follows:
-python file_name.py input.1.fastafile.fasta input.file.2.with.contigs.ofinterest.txt
+```python file_name.py input.1.fastafile.fasta input.file.2.with.contigs.ofinterest.txt```
 
 
