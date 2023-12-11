@@ -293,6 +293,7 @@ or
 os.environ['TMPDIR'] = tmpdir
 ```
 
+---
 
 ## 9: Understand a regular expression (_Anna_)
 
@@ -311,3 +312,24 @@ Acaricomes phytoseiuli [ref_mOTU_v25_06702]                    1  ...           
 
 motus['motus_code'] = motus['index'].str.extract('\[(.*?)\]')
 ```
+---
+
+## 10: Process by chunks in Pandas (_Luis_)
+
+If you need to process very large tables with Pandas, they might not fit in
+memory comfortably, but often you can process them by chunks using
+[`pandas.read_csv`](https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html)
+and the `chunksize` argument
+
+```python
+for chunk in pd.read_csv('very-large-table.xz', \
+                sep='\t', \
+                index_col=0, \
+                header=None, \
+                names=['col1','col2'], \
+                chunksize=1_000_000): \
+    chunk = chunk.query('col1 == 1')
+    ...
+```
+
+
