@@ -332,6 +332,8 @@ for chunk in pd.read_csv('very-large-table.xz', \
     ...
 ```
 
+---
+
 ## 11: Generate index file and use .npy file to quickly select data (_Yiqian_)
 Original file
 ```
@@ -370,6 +372,8 @@ import numpy as np
 tax = np.load('GMSC10.100AA.habitat.npy',mmap_mode='r')
 tax[2]
 ```
+
+---
 
 ## 12: Generator using yield (_Shaojun_)
 
@@ -432,6 +436,7 @@ def fasta_iter(fname, full_header=False):
 for h, seq in fasta_iter(fasta_path):
 	...
 ```
+
 ---
 
 ## 13: pysam for manipulation of SAM and BAM files (_Vedanth_)
@@ -453,31 +458,35 @@ for read in samfile.fetch():
 ```
 ---
 
-**#14: Extracting specific contigs from a metagenome assembly (_JP_)**
+## 14: Extracting specific contigs from a metagenome assembly (_JP_)
 
-```from Bio import SeqIO
+```python
+from Bio import SeqIO
 import sys
 fasta_file = sys.argv[1] #fasta file
 number_file = sys.argv[2] #ID file
 
 wanted = []
-handle =  open(number_file)
+handle = open(number_file)
 for line in handle:
     line = line.strip()
     if line != "":
         wanted.append(line)
+wanted = set(wanted)
+
 fasta_sequences = SeqIO.parse(open(fasta_file),'fasta')
 end = False
 for seq in fasta_sequences:
     if seq.id in wanted:
         print (">" + seq.id +"\n" + seq.seq)```
 
-#Save as .py file
-#Requires Biopython to run
-#Needs two input files: an assembly fasta file and a text file with the contig IDs of interest
+- Save as .py file
+- Requires Biopython to run
+- Needs two input files: an assembly fasta file and a text file with the contig IDs of interest
+- Run as follows:
 
-#Run as follows:
-
-```python file_name.py input.1.fastafile.fasta input.file.2.with.contigs.ofinterest.txt```
+```bash
+python file_name.py input.1.fastafile.fasta input.file.2.with.contigs.ofinterest.txt
+```
 
 
