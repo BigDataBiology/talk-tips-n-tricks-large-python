@@ -4,7 +4,6 @@
 
 ## 1: Use [Jug](https://jug.rtfd.io/) (_Luis_)
 
-
 ```python
 import pandas as pd
 from glob import glob
@@ -67,7 +66,6 @@ with gzip.open('output.txt.gz', 'wt', compresslevel=0) as out:
 
 We want to find exact match of pepetides against smORFs.
 
-
 ## Works very well for small datasets, but becomes too slow at scale
 
 ```python
@@ -81,6 +79,7 @@ def dbsearch(dbin,query):
 ---
 
 ### Example:
+
 **QUERY**:
 ABCDEFGHIJKLMN,
 OPQRSTUVWXYZ
@@ -94,20 +93,20 @@ IJKLMN
 
 Two layer `for` cycle to find：
 
-If CDEF is a substring of ABCDEFGHIJKLMN and OPQRSTUVWXYZ ... 
+If CDEF is a substring of ABCDEFGHIJKLMN and OPQRSTUVWXYZ ...
 
-IF XYZ is a substring of ABCDEFGHIJKLMN and OPQRSTUVWXYZ ... 
+IF XYZ is a substring of ABCDEFGHIJKLMN and OPQRSTUVWXYZ ...
 ...
 
-
 ### Problem:
+
 If **QUERY** has n sequences,**dbin** has m sequences.
 
 Time complexity is O(n×m).
 
-Running time depends on how big the `QUERY` dataset is and the `dbin` dataset is. 
+Running time depends on how big the `QUERY` dataset is and the `dbin` dataset is.
 
-It will take several minutes when `dbin` dataset is 1Mb.But it will take too long to run when `dbin` dataset is 500Mb. 
+It will take several minutes when `dbin` dataset is 1Mb.But it will take too long to run when `dbin` dataset is 500Mb.
 
 ---
 
@@ -127,6 +126,7 @@ def dbsearch(dbin,query,db_min,db_max):
 ---
 
 ### Example:
+
 **QUERY**:
 ABCDEFGHIJKLMN,
 OPQRSTUVWXYZ
@@ -155,8 +155,8 @@ Then find if each substring is in `dbin` `set`. If so,it means this substring(th
 
 ---
 
-
 ### Solve problem
+
 If **QUERY** has n sequences,**dbin** has m sequences.
 
 Time complexity is like O(n)? Because seaching in a `set` is O(1)
@@ -167,7 +167,6 @@ Running time only depends on how big the 'QUERY' dataset is.
 
 ## Basic costs in Python
 
-
 ```python
 if elem in container:
    ...
@@ -175,7 +174,6 @@ if elem in container:
 
 is `O(N)` if `container` is a list, but `O(1)` if `container` is a
 `set`/`dict`
-
 
 ---
 
@@ -199,7 +197,7 @@ df = dt.fread('input.tsv', sep='\t')
 
 1. `datatable` uses multi-threading for file reading.
 2. `datatable` provides `to_pandas` API so that you can do downstream analysis using pandas.
-3.  Depends on how many cores your machine has, this could save you 50 ~ 70% of time.
+3. Depends on how many cores your machine has, this could save you 50 ~ 70% of time.
 
 ## 5 Use Progress bar to see whether your loop is becoming slower and slower
 
@@ -288,7 +286,9 @@ with tempfile.TemporaryDirectory() as tdir:
 with tempfile.TemporaryDirectory(tdir = tmpdir) as tdir:
 		...
 ```
+
 or
+
 ```python
 os.environ['TMPDIR'] = tmpdir
 ```
@@ -308,10 +308,11 @@ print(motus.head())
 index                                               SAMEA4689043  ...  SAMEA4546741
 Abiotrophia defectiva [ref_mOTU_v25_04788]                    40  ...            22
 Absiella dolichum [ref_mOTU_v25_03694]                       142  ...             8
-Acaricomes phytoseiuli [ref_mOTU_v25_06702]                    1  ...           287   
+Acaricomes phytoseiuli [ref_mOTU_v25_06702]                    1  ...           287
 
 motus['motus_code'] = motus['index'].str.extract('\[(.*?)\]')
 ```
+
 ---
 
 ## 10: Process by chunks in Pandas (_Luis_)
@@ -335,7 +336,9 @@ for chunk in pd.read_csv('very-large-table.xz', \
 ---
 
 ## 11: Generate index file and use .npy file to quickly select data (_Yiqian_)
+
 Original file
+
 ```
 GMSC10.100AA.000_000_000    d__Archaea
 GMSC10.100AA.000_000_001    Unknown
@@ -343,6 +346,7 @@ GMSC10.100AA.000_000_002    d__Archaea;p__Aenigmatarchaeota;c__Aenigmatarchaeia
 ```
 
 Index file
+
 ```
 0   Unknown
 1   d__Archaea
@@ -353,6 +357,7 @@ Index file
 ```
 
 Index formatted file `GMSC10.100AA.habitat.idx.tsv`
+
 ```
 GMSC10.100AA.000_000_000    1
 GMSC10.100AA.000_000_001    0
@@ -360,6 +365,7 @@ GMSC10.100AA.000_000_002    2
 ```
 
 Generate .npy file
+
 ```python
 import numpy as np
 df = np.loadtxt('GMSC10.100AA.habitat.idx.tsv',dtype=int, usecols=(1))
@@ -367,6 +373,7 @@ np.save('GMSC10.100AA.habitat.npy',df)
 ```
 
 Use .npy file
+
 ```
 import numpy as np
 tax = np.load('GMSC10.100AA.habitat.npy',mmap_mode='r')
@@ -444,6 +451,7 @@ for h, seq in fasta_iter(fasta_path):
 [`pysam`](https://pysam.readthedocs.io/en/latest/api.html) provides functionalities to read, write and manipulate SAM and BAM files.
 
 For example,
+
 ```python
 import pysam
 
@@ -456,11 +464,12 @@ for read in samfile.fetch():
     print(read.query_name, read.reference_name, read.reference_start)
 
 ```
+
 ---
 
 ## 14: Extracting specific contigs from a metagenome assembly (_JP_)
 
-```python
+````python
 from Bio import SeqIO
 import sys
 fasta_file = sys.argv[1] #fasta file
@@ -487,6 +496,47 @@ for seq in fasta_sequences:
 
 ```bash
 python file_name.py input.1.fastafile.fasta input.file.2.with.contigs.ofinterest.txt
+````
+
+---
+
+## 15: Polars is a much faster/memory efficient alternative to Pandas (_SMD_)
+
+Polars is a Rust-based DataFrame library that is much faster and more memory efficient than Pandas. It is multithreaded out of the box, therefore be careful with parallization as it will most often not lead to better performance.
+
+The syntax is little different but easy to get used to. If you have worked with tidyverse in R, you will find it very similar.
+
+Polars has an elaborate Python API documentation that you can find [here](https://docs.pola.rs/py-polars/html/reference/index.html).
+
+```python
+# Initialize max threads for polars
+os.environ['POLARS_MAX_THREADS'] = '1'
+import polars as pl
+
+df = pl.read_csv('data.csv')
+
+df = df.filter( # filter rows in df
+        pl.col("column_name") == "value"
+    )\
+    .with_columns( # modify and create new columns
+        pl.col("column_name").cast(pl.Int64), # change column type
+        (pl.col("column_name") * 2).alias("new_column_name"), # create new column
+        third_column = pl.col("column_name") + pl.col("new_column_name") # create new column
+    )
+
+# conditional modification
+forward_indices = pl.Series([1, 2, 3, 4, 5])
+motif = "GATC"
+
+## If position is in forward_indices and strand is "+", create
+data = data.with_columns(
+        pl.lit("").alias("motif"), # create empty string column
+        pl.when(                   # conditionally modify the column
+            (pl.col("position").is_in(forward_indices)) & (pl.col("strand") == "+")
+        ).then(pl.lit(motif)).otherwise(pl.col("motif")).alias("motif")
+    )
+
+df.write_csv('output.csv')
 ```
 
-
+It takes some getting use to but once you get the hang of it, you will find it much faster.
