@@ -500,7 +500,7 @@ python file_name.py input.1.fastafile.fasta input.file.2.with.contigs.ofinteres
 
 ---
 
-## 15: Polars is a much faster/memory efficient alternative to Pandas (_SMD_)
+## 15: Polars is a much faster/memory efficient alternative to Pandas (_Sebastian_)
 
 Polars is a Rust-based DataFrame library that is much faster and more memory efficient than Pandas. It is multithreaded out of the box, therefore be careful with parallization as it will most often not lead to better performance.
 
@@ -529,7 +529,7 @@ forward_indices = pl.Series([1, 2, 3, 4, 5])
 motif = "GATC"
 
 ## If position is in forward_indices and strand is "+", create
-data = data.with_columns(
+df = df.with_columns(
         pl.lit("").alias("motif"), # create empty string column
         pl.when(                   # conditionally modify the column
             (pl.col("position").is_in(forward_indices)) & (pl.col("strand") == "+")
