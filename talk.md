@@ -540,3 +540,80 @@ df.write_csv('output.csv')
 ```
 
 It takes some getting use to but once you get the hang of it, you will find it much faster.
+
+---
+
+## 16: [Snakemake](https://snakemake.readthedocs.io/en/stable/) to create automated analysis workflow  (___Rizky___)
+
+Snakemake is a workflow management system to create reproducible and scalable data analysis workflow using Python-based language.
+
+Example (part of my minimap_danica.smk file),
+```python
+import os
+
+###data, scripts and database directory###
+parent_dir = os.path.dirname(workflow.basedir)
+db_dir = os.path.join(parent_dir, "0_database")
+data_dir = os.path.join(parent_dir, "0_data")
+
+#mapping the data to the user defined reference database using minimap2
+rule map_minimap2:
+    input:
+    #F and R should have the same name with R1 suffix for forward and R2 for reverse located in 0_data directory.
+    #example: data1.fastq.gz and data2.fastq.gz and the rule should read it automatically and use the filename (accession name) to ensure reproducibility
+        F = f"{data_dir}/cami/{{filename}}_R1.fastq.gz",
+        R = f"{data_dir}/cami/{{filename}}_R2.fastq.gz",
+    #ref is the indexed database from user
+        ref = f"{db_dir}/2023-09-26_MFD_ssu_database_trunc.fa"
+    output:
+        "1_assign_danica2/{filename}.sam"
+	#the directory would be created by snakemake automatically
+    conda:
+        "envs/minimap2.yaml"
+	#user can create minimap2.yaml to list all dependencies and snakemake will make its own environment based on the yaml file
+    threads:
+        1
+	#both threads and resources can be user defined per rule or at the code execution 
+    resources:
+        mem_mb = 16000,
+        runtime = "96h"
+    benchmark:
+        "0_logs_danica2/{filename}/map_minimap2.benchmark.txt"
+	#provide time and memory usage per rule
+    log:
+        "0_logs_danica2/{filename}/map_minimap2.log"
+        #log and benchmark files are located in 0_logs folder and the subdirectory with read accession name, it will put STDERR
+    shell:
+        "(minimap2 -ax sr -t {threads} {input.ref} {input.F} {input.R} > {output}) 2> {log}"
+	#command to be executed in the rule
+```
+
+---
+
+## 16: [Snakemake](https://snakemake.readthedocs.io/en/stable/) part 2  (___Rizky___)
+
+Checking if the rule is okay
+```bash
+snakemake --lint --snakefile minimap_danica.smk
+```
+Dry-run to see the flow 
+```bash
+snakemake -np --snakefile minimap2_danica.smk
+```
+General execution is snakemake and then the intended output
+```bash
+snakemake CAMI_1.sam
+```
+Execution and assigning thread usage -> 10 threads
+```bash
+snakemake --cores 10 CAMI_1.sam
+```
+Using profile (this one is snakemake adaptor to Lyra - QUT supercomputer)
+```bash
+snakemake --profile mqsub-lyra-v8 --snakefile minimap_danica.smk
+```
+
+After successful execution of the job, Snakemake will write-protect the output file in the filesystem, so that it can’t be overwritten or deleted.
+It does take time (and patience) to build it but the resulting files (.smk, .yaml, profile) can be shared pretty easily.
+
+---
