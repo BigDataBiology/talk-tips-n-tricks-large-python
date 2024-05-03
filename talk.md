@@ -573,7 +573,7 @@ rule map_minimap2:
 	#user can create minimap2.yaml to list all dependencies and snakemake will make its own environment based on the yaml file
     threads:
         1
-	#both threads and resources can be user defined per rule or at the code execution 
+	#both threads and resources can be user defined per rule or at the code execution
     resources:
         mem_mb = 16000,
         runtime = "96h"
@@ -596,7 +596,7 @@ Checking if the rule is okay
 ```bash
 snakemake --lint --snakefile minimap_danica.smk
 ```
-Dry-run to see the flow 
+Dry-run to see the flow
 ```bash
 snakemake -np --snakefile minimap2_danica.smk
 ```
@@ -617,3 +617,28 @@ After successful execution of the job, Snakemake will write-protect the output f
 It does take time (and patience) to build it but the resulting files (.smk, .yaml, profile) can be shared pretty easily.
 
 ---
+
+
+## 17: [Numba](https://numba.pydata.org/) for just in time compiling in Python (_Vedanth_)
+
+- Numba is a just-in-time compiler for Python.
+- Works best on code that uses NumPy arrays and functions, and loops.
+- Most common way to use Numba is through its decorators that can be applied to functions to instruct Numba to compile them.
+
+Example:
+```bash
+from numba import njit
+import random
+
+@njit
+def monte_carlo_pi_calculation(nsamples):
+    acc = 0
+    for i in range(nsamples):
+        x = random.random()
+        y = random.random()
+        if (x ** 2 + y ** 2) < 1.0:
+            acc += 1
+    return 4.0 * acc / nsamples
+```
+
+- ~400ms without njit to ~15ms with njit
