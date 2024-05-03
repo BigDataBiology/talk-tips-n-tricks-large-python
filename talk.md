@@ -641,4 +641,4 @@ def monte_carlo_pi_calculation(nsamples):
     return 4.0 * acc / nsamples
 ```
 
-- ~400ms without njit to ~15ms with njit
+- ~400ms without njit to ~6ms with njit
