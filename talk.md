@@ -642,3 +642,16 @@ def monte_carlo_pi_calculation(nsamples):
 ```
 
 - ~400ms without njit to ~6ms with njit
+- ---
+
+
+## 18: BioG-HGT pipeline - BioGeochemical Horizontal Gene Transfer pipeline
+- https://github.com/Shaedeycool/BioG-HGT_wd
+- for identification of horizontally transferred biogeochemical genes
+- Identifies horizontally transferred biogeochemical genes with mobile genetic elements found on the same contig
+- Output file: the BGCs, along with the MGE and corresponding MAG
+- The relative abundance of the BGC gene, MGE e-value and the sequences for both the BGC gene and MGE in the contig
+[
+](https://github.com/Shaedeycool/BioG-HGT_wd/blob/main/workflow_1.png)![image](https://github.com/BigDataBiology/talk-tips-n-tricks-large-python/assets/124160719/fd709d4e-6b96-4894-93e8-323e03889a9d)
+
+
