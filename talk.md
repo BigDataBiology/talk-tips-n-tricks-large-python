@@ -546,6 +546,7 @@ It takes some getting use to but once you get the hang of it, you will find it m
 ## 16: [Snakemake](https://snakemake.readthedocs.io/en/stable/) to create automated analysis workflow  (___Rizky___)
 
 Snakemake is a workflow management system to create reproducible and scalable data analysis workflow using Python-based language.
+It does take time (and patience) to build it but the resulting files (.smk, .yaml, profile) can be shared pretty easily.
 
 Example (part of my minimap_danica.smk file),
 ```python
@@ -564,16 +565,25 @@ rule map_minimap2:
         F = f"{data_dir}/cami/{{filename}}_R1.fastq.gz",
         R = f"{data_dir}/cami/{{filename}}_R2.fastq.gz",
     #ref is the indexed database from user
-        ref = f"{db_dir}/2023-09-26_MFD_ssu_database_trunc.fa"
+        ref = f"{db_dir}/danica.db"
     output:
         "1_assign_danica2/{filename}.sam"
 	#the directory would be created by snakemake automatically
+
+```
+
+---
+
+
+## 16: [Snakemake](https://snakemake.readthedocs.io/en/stable/) part 3  (___Rizky___)
+
+```python
     conda:
         "envs/minimap2.yaml"
 	#user can create minimap2.yaml to list all dependencies and snakemake will make its own environment based on the yaml file
     threads:
         1
-	#both threads and resources can be user defined per rule or at the code execution
+	#both threads and resources can be user defined per rule, needed for certain profile
     resources:
         mem_mb = 16000,
         runtime = "96h"
@@ -585,12 +595,13 @@ rule map_minimap2:
         #log and benchmark files are located in 0_logs folder and the subdirectory with read accession name, it will put STDERR
     shell:
         "(minimap2 -ax sr -t {threads} {input.ref} {input.F} {input.R} > {output}) 2> {log}"
-	#command to be executed in the rule
+	#shell command to be executed in the rule
 ```
 
 ---
 
-## 16: [Snakemake](https://snakemake.readthedocs.io/en/stable/) part 2  (___Rizky___)
+
+## 16: [Snakemake](https://snakemake.readthedocs.io/en/stable/) part 3  (___Rizky___)
 
 Checking if the rule is okay
 ```bash
@@ -598,7 +609,7 @@ snakemake --lint --snakefile minimap_danica.smk
 ```
 Dry-run to see the flow
 ```bash
-snakemake -np --snakefile minimap2_danica.smk
+snakemake -np --snakefile minimap_danica.smk
 ```
 General execution is snakemake and then the intended output
 ```bash
@@ -612,9 +623,7 @@ Using profile (this one is snakemake adaptor to Lyra - QUT supercomputer)
 ```bash
 snakemake --profile mqsub-lyra-v8 --snakefile minimap_danica.smk
 ```
-
-After successful execution of the job, Snakemake will write-protect the output file in the filesystem, so that it can’t be overwritten or deleted.
-It does take time (and patience) to build it but the resulting files (.smk, .yaml, profile) can be shared pretty easily.
+After successful execution, Snakemake will write-protect the output file in the filesystem, so that it can’t be overwritten or deleted.
 
 ---
 
