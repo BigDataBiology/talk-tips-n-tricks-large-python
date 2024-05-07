@@ -655,3 +655,51 @@ def monte_carlo_pi_calculation(nsamples):
 ](https://github.com/Shaedeycool/BioG-HGT_wd/blob/main/workflow_1.png)![image](https://github.com/BigDataBiology/talk-tips-n-tricks-large-python/assets/124160719/fd709d4e-6b96-4894-93e8-323e03889a9d)
 
 
+## 19: Use query() for more efficient filtering of a dataframe (Anna)
+
+## Less efficient: Iteration
+
+- Iteration over a DataFrame involves using loops to process each row or column individually (Python-level looping)
+- With large datasets, iterating row by row can be particularly slow
+- Does not take advantage of NumPy's operations
+
+```python
+import pandas as pd
+
+metadata = pd.read_csv('metadata.csv')
+filtered_rows = []
+
+for index, row in metadata.iterrows():
+    if row['size'] == 'large' and row['age'] != 'puppy' and row['kg'] > 25:
+        filtered_rows.append(row)
+
+metadata_filt = pd.DataFrame(filtered_rows)
+```
+## Less efficient: Boolean indexing
+
+- By applying conditions to columns in the DataFrame, it creates boolean arrays. These boolean arrays are then used to select rows from the DataFrame.
+- Boolean indexing uses NumPy operations for efficient filtering. But, the conditions are evaluated element-wise for each column.
+- Boolean indexing allows for more flexibility in combining conditions using logical operators (&, |, ~)
+
+```python
+import pandas as pd
+
+metadata = pd.read_csv('metadata.csv')
+metadata_filt = metadata[metadata['size'] == 'large' & metadata['age'] != 'puppy' & metadata['kg'] > 25]
+```
+
+## Better: Use query()
+
+- More concise and readable way to express complex filtering conditions: you provide a boolean expression as a string, which represents the filtering conditions.
+- When you use the query() method in pandas, pandas parses the string expression and converts it into a boolean array using NumPy operations.
+- These boolean arrays represent whether each row in the DataFrame satisfies the filtering conditions or not.
+- Particularly advantageous when dealing with large datasets because it delegates the filtering process to the underlying NumPy operations.
+
+```python
+import pandas as pd
+
+metadata = pd.read_csv('metadata.csv')
+metadata_filt = metadata.query("size == 'large' and age != 'puppy' and kg > 25")
+```
+
+In summary, while query() tends to be the most efficient option for filtering large datasets with complex conditions, the performance difference between query(), boolean indexing, and iteration may vary based on factors such as dataset size, complexity of conditions, and the number of conditions. 
