@@ -703,3 +703,29 @@ metadata_filt = metadata.query("size == 'large' and age != 'puppy' and kg > 25")
 ```
 
 In summary, while query() tends to be the most efficient option for filtering large datasets with complex conditions, the performance difference between query(), boolean indexing, and iteration may vary based on factors such as dataset size, complexity of conditions, and the number of conditions. 
+
+---
+## Basic parallelisation (Brett)
+- Use concurrent futures for basic parallelisation.
+- Useful for monotonous tasks (i.e.: reading through >100,000 fasta files) to speed it up.
+
+#### Without
+```
+def get_species_names_list(all_cluster_files, threads):
+    species_names = set()
+    for file in all_cluster_files:
+        species_names.update(job.result())
+    return sorted(list(species_names))
+```
+
+#### With
+```
+def get_species_names_list(all_cluster_files, threads):
+    species_names = set()
+    with ThreadPoolExecutor(max_workers = threads) as executor:
+        jobs = [executor.submit(get_species_name_from_file, file) for file in all_cluster_files]
+        for job in jobs:
+            species_names.update(job.result())
+        return sorted(list(species_names))
+```
+---
