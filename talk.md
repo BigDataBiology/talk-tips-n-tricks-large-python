@@ -976,8 +976,10 @@ count = SeqIO.write(records, "test.phylip", "phylip")
 ---
 
 ## 26 Check if the function has finished running （_Chengkai_）
+
 - If you're going to run a lot of samples, let's first complete one process, then I'd like to string these programs together.
-```
+
+```python
 # Check if the function has finished running
 def ngless():
 	os.system(cmd)
@@ -1029,8 +1031,6 @@ def main():
 
         for func in functions:
                 exec_function(func['name'], func['flag'], func['timeout'])
-
-
 ```
 
 
