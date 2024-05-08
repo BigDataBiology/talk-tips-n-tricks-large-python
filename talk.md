@@ -738,3 +738,30 @@ def get_species_names_list(all_cluster_files, threads):
         return sorted(list(species_names))
 ```
 ---
+
+## 21: Use extern to run subprocesses (_ben_)
+
+## BEFORE
+
+```python
+import subprocess
+subprocess.check_output(['echo','yes']) #=> "yes\n"
+subprocess.check_output(['cat','/notafile']) #=> Exception (generic, STDERR printed to STDERR)
+```
+
+## AFTER
+
+```python
+import extern
+extern.run('echo yes') #=> "yes\n"
+extern.run('cat /notafile') #=> Exception with STDERR and STDOUT
+```
+Also
+```python
+extern.run("echo 1 2 5 |cat") #=> '1 2 5\n' (can do bash piping)
+
+extern.run_many(['echo once','echo twice','echo thrice'], progress_stream=sys.stderr) #=> ['once\n', 'twice\n', 'thrice\n']
+### Finished processing 3 of 3 (100.00%) items.
+```
+
+---
