@@ -849,4 +849,43 @@ Modulo operator:   90.98 ms
 .format() method: 144.69 ms
 f_string:          87.08 ms
 ```
+---
+
+## 23: Use sys.getsizeof to guide data struction optimization (_Yibi_)
+
+## Sample infomation,different datatype -> different size 
+```python
+>>> a=["a","b"]
+>>> b="ab"
+>>> sys.getsizeof(a)
+72
+>>> sys.getsizeof(b)
+51
+```
+
+## Guide optimization
+Say we need to store 4-mers of DNA sequenes
+```python
+>>> def motif_to_binary(motif):
+...     base_to_binary = {"A": 0b00, "T": 0b01, "C": 0b10, "G": 0b11}
+...     binary_motif = 0
+...     for base in motif:
+...         binary_motif <<= 2  # Shift left by 2 bits to make room for the next base
+...         binary_motif |= base_to_binary[base]  # Use bitwise OR to combine the binary representations
+...     return binary_motif
+...
+>>> # Example motif string
+>>> motif = "ATCG"
+>>> binary_motif = motif_to_binary(motif)
+>>> sys.getsizeof(motif)
+53
+>>> sys.getsizeof(binary_motif)
+28
+>>> binary_motif_int8=numpy.int8(binary_motif)
+>>> sys.getsizeof(binary_motif_int8)
+25
+```
+
+
+
 ___
