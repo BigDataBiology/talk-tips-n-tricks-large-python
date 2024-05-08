@@ -995,6 +995,31 @@ def exec_function(name, flag='', timeout=60):
         if not has_flag:
                 print("Error: function [%s] failed!"%name)
                 exit(-1)
+
+def main():
+        functions = [
+                {
+                        'name': 'ngless',
+                        'flag': outdir+"01ngless/"+sample+".json",
+                        'timeout': 36000,
+                },
+                {
+                        'name': 'semibin2',
+                        'flag': outdir+"02semibin2/"+sample+"_bin.fa",
+                        'timeout': 36000
+                },
+		{
+			'name':'eggnog',
+			'flag':outdir+"03eggnog/"+sample+"_eggnog.txt",
+			'timeout': 36000
+
+		},
+        ]
+
+        for func in functions:
+                exec_function(func['name'], func['flag'], func['timeout'])
+
+
 ```
 
 
