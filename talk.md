@@ -502,19 +502,24 @@ python file_name.py input.1.fastafile.fasta input.file.2.with.contigs.ofinteres
 
 ## 15: Polars is a much faster/memory efficient alternative to Pandas (_Sebastian_)
 
-Polars is a Rust-based DataFrame library that is much faster and more memory efficient than Pandas. It is multithreaded out of the box, therefore be careful with parallization as it will most often not lead to better performance.
+Polars is a Rust-based DataFrame library that is much faster and more memory efficient than Pandas. It is multithreaded out of the box, therefore be careful with parallization as it will most often not lead to better performance. Rust is a typed language, so you have to keep that in mind, when working with Polars.
 
 The syntax is little different but easy to get used to. If you have worked with tidyverse in R, you will find it very similar.
 
 Polars has an elaborate Python API documentation that you can find [here](https://docs.pola.rs/py-polars/html/reference/index.html).
+---
 
+## 15: Polars example (_Sebastian_)
+Here is a simple example of how to read a csv file, filter rows, and write the result to a new csv file.
 ```python
 # Initialize max threads for polars
 os.environ['POLARS_MAX_THREADS'] = '1'
 import polars as pl
 
-df = pl.read_csv('data.csv')
+# Read a csv file
+df = pl.read_csv('data.csv', separator = ",")
 
+# Manipulate the dataframe
 df = df.filter( # filter rows in df
         pl.col("column_name") == "value"
     )\
@@ -524,25 +529,29 @@ df = df.filter( # filter rows in df
         third_column = pl.col("column_name") + pl.col("new_column_name") # create new column
     )
 
-# conditional modification
-forward_indices = pl.Series([1, 2, 3, 4, 5])
-motif = "GATC"
-
-## If position is in forward_indices and strand is "+", create
-df = df.with_columns(
-        pl.lit("").alias("motif"), # create empty string column
-        pl.when(                   # conditionally modify the column
-            (pl.col("position").is_in(forward_indices)) & (pl.col("strand") == "+")
-        ).then(pl.lit(motif)).otherwise(pl.col("motif")).alias("motif")
-    )
-
 df.write_csv('output.csv')
 ```
 
-It takes some getting use to but once you get the hang of it, you will find it much faster.
+---
+## 15: Polars example 2 (_Sebastian_)
+Here we will conditionally modify a column based on the values of another column and an array.
+```python
+# conditional modification
+forward_indices = pl.Series([1, 2, 3, 4, 5])
+motif_str = "GATC"
+
+## If position is in forward_indices and other_column is some_condition, then modify the motif column
+df = df.with_columns(
+        pl.lit("").alias("motif"), # create empty string column called motif
+        pl.when(                   # conditionally modify the column
+            (pl.col("position").is_in(forward_indices)) & (pl.col("other_column") == "some_condition")
+        ).then(pl.lit(motif_str)).otherwise(pl.col("motif")).alias("motif")
+    )
+
+```
+The syntax takes some getting use to but once you get the hang of it, you will find it much faster.
 
 ---
-
 ## 16: [Snakemake](https://snakemake.readthedocs.io/en/stable/) to create automated analysis workflow  (___Rizky___)
 
 Snakemake is a workflow management system to create reproducible and scalable data analysis workflow using Python-based language.
@@ -651,20 +660,20 @@ def monte_carlo_pi_calculation(nsamples):
 ```
 
 - ~400ms without njit to ~6ms with njit
-- ---
 
+---
 
-## 18: BioG-HGT pipeline - BioGeochemical Horizontal Gene Transfer pipeline (JP)
+## 18: BioG-HGT pipeline - BioGeochemical Horizontal Gene Transfer pipeline (_JP_)
+
 - https://github.com/Shaedeycool/BioG-HGT_wd
 - for identification of horizontally transferred biogeochemical genes
 - Identifies horizontally transferred biogeochemical genes with mobile genetic elements found on the same contig
 - Output file: the BGCs, along with the MGE and corresponding MAG
 - The relative abundance of the BGC gene, MGE e-value and the sequences for both the BGC gene and MGE in the contig
-[
-](https://github.com/Shaedeycool/BioG-HGT_wd/blob/main/workflow_1.png)![image](https://github.com/BigDataBiology/talk-tips-n-tricks-large-python/assets/124160719/fd709d4e-6b96-4894-93e8-323e03889a9d)
+![image](https://github.com/BigDataBiology/talk-tips-n-tricks-large-python/assets/124160719/72ac04c8-b347-40d5-bf5e-a58b85b9cd61)
+---
 
-
-## 19: Use query() for more efficient filtering of a dataframe (Anna)
+## 19: Use query() for more efficient filtering of a dataframe (_Anna_)
 
 ## Less efficient: Iteration
 
@@ -684,6 +693,9 @@ for index, row in metadata.iterrows():
 
 metadata_filt = pd.DataFrame(filtered_rows)
 ```
+
+---
+
 ## Less efficient: Boolean indexing
 
 - By applying conditions to columns in the DataFrame, it creates boolean arrays. These boolean arrays are then used to select rows from the DataFrame.
@@ -697,6 +709,7 @@ metadata = pd.read_csv('metadata.csv')
 metadata_filt = metadata[metadata['size'] == 'large' & metadata['age'] != 'puppy' & metadata['kg'] > 25]
 ```
 
+---
 ## Better: Use query()
 
 - More concise and readable way to express complex filtering conditions: you provide a boolean expression as a string, which represents the filtering conditions.
@@ -851,7 +864,52 @@ f_string:          87.08 ms
 ```
 ---
 
-## 23: Use sys.getsizeof to guide data struction optimization (_Yibi_)
+
+
+
+## 23: Use `%%prun` to profile code in Jupyter notebooks/shell (_Luis_)
+
+This works both in Jupyter and in IPython (Jupyter shell)
+
+1. `%` indicates that you are running a magic single-line command in Jupyter
+2. `%%` indicates that you are running a magic multi-line (or cell) command in Jupyter
+3. `prun` is the command to profile code
+
+## Example
+
+```python
+%%prun
+normalizer = argnorm.DeepARGNormalizer(is_hamronized=hamronized)
+normed = get_normed(normalizer, input_path)
+```
+---
+
+## Output of `%%prun`
+
+```
+In[20]:     %%prun
+            normalizer = argnorm.DeepARGNormalizer(is_hamronized=hamronized)
+            normed = get_normed(normalizer, input_path)
+          1345727 function calls (1345358 primitive calls) in 0.501 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    26183    0.108    0.000    0.154    0.000 inspect.py:3076(_bind)
+    22472    0.039    0.000    0.064    0.000 meta.py:25(check_type)
+    26183    0.037    0.000    0.296    0.000 meta.py:83(newfunc)
+    13731    0.025    0.000    0.044    0.000 lineage.py:273(_next_id)
+    90597    0.019    0.000    0.019    0.000 {built-in method builtins.getattr}
+        3    0.018    0.006    0.018    0.006 {method 'read_low_memory' of 'pandas._libs.parsers.TextReader' objects}
+     1998    0.014    0.000    0.229    0.000 drug_categorization.py:9(confers_resistance_to)
+   149678    0.014    0.000    0.014    0.000 {built-in method builtins.next}
+    18761    0.012    0.000    0.022    0.000 ontology.py:504(get_term)
+     7924    0.010    0.000    0.018    0.000 __init__.py:382(relationships)
+     3711    0.009    0.000    0.011    0.000 lineage.py:238(__init__)
+
+     ....
+```
+## 24: Use sys.getsizeof to guide data struction optimization (_Yibi_)
 
 ## Sample infomation,different datatype -> different size 
 ```python
@@ -886,6 +944,5 @@ Say we need to store 4-mers of DNA sequenes
 25
 ```
 Using binary representation saves about 50% of memory!
-
 
 ___
