@@ -915,7 +915,15 @@ In[20]:     %%prun
 
      ....
 ```
+
+You can get the same output for a full script by running with `-m cProfile`:
+
+```bash
+python -m cProfile myscript.py
+```
+
 ---
+
 ## 24: Use sys.getsizeof to guide data struction optimization (_Yibi_)
 
 ## Sample infomation,different datatype -> different size 
