@@ -737,7 +737,6 @@ def get_species_names_list(all_cluster_files, threads):
             species_names.update(job.result())
         return sorted(list(species_names))
 ```
----
 
 ---
 ## 21: Polars lazy/streaming
