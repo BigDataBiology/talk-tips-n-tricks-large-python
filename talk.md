@@ -723,7 +723,7 @@ In summary, while query() tends to be the most efficient option for filtering la
 def get_species_names_list(all_cluster_files, threads):
     species_names = set()
     for file in all_cluster_files:
-        species_names.update(job.result())
+        species_names.update(get_species_name_from_file(file))
     return sorted(list(species_names))
 ```
 
