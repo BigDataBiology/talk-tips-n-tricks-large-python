@@ -502,19 +502,23 @@ python file_name.py input.1.fastafile.fasta input.file.2.with.contigs.ofinteres
 
 ## 15: Polars is a much faster/memory efficient alternative to Pandas (_Sebastian_)
 
-Polars is a Rust-based DataFrame library that is much faster and more memory efficient than Pandas. It is multithreaded out of the box, therefore be careful with parallization as it will most often not lead to better performance.
+Polars is a Rust-based DataFrame library that is much faster and more memory efficient than Pandas. It is multithreaded out of the box, therefore be careful with parallization as it will most often not lead to better performance. Rust is a typed language, so you have to keep that in mind, when working with Polars.
 
 The syntax is little different but easy to get used to. If you have worked with tidyverse in R, you will find it very similar.
 
 Polars has an elaborate Python API documentation that you can find [here](https://docs.pola.rs/py-polars/html/reference/index.html).
 
+## 15: Polars example (_Sebastian_)
+Here is a simple example of how to read a csv file, filter rows, and write the result to a new csv file.
 ```python
 # Initialize max threads for polars
 os.environ['POLARS_MAX_THREADS'] = '1'
 import polars as pl
 
-df = pl.read_csv('data.csv')
+# Read a csv file
+df = pl.read_csv('data.csv', separator = ",")
 
+# Manipulate the dataframe
 df = df.filter( # filter rows in df
         pl.col("column_name") == "value"
     )\
@@ -524,24 +528,28 @@ df = df.filter( # filter rows in df
         third_column = pl.col("column_name") + pl.col("new_column_name") # create new column
     )
 
-# conditional modification
-forward_indices = pl.Series([1, 2, 3, 4, 5])
-motif = "GATC"
-
-## If position is in forward_indices and strand is "+", create
-df = df.with_columns(
-        pl.lit("").alias("motif"), # create empty string column
-        pl.when(                   # conditionally modify the column
-            (pl.col("position").is_in(forward_indices)) & (pl.col("strand") == "+")
-        ).then(pl.lit(motif)).otherwise(pl.col("motif")).alias("motif")
-    )
-
 df.write_csv('output.csv')
 ```
 
-It takes some getting use to but once you get the hang of it, you will find it much faster.
-
 ---
+## 15: Polars example 2 (_Sebastian_)
+Here we will conditionally modify a column based on the values of other columns.
+```python
+# conditional modification
+forward_indices = pl.Series([1, 2, 3, 4, 5])
+motif_str = "GATC"
+
+## If position is in forward_indices and other_column is some_condition, then modify the motif column
+df = df.with_columns(
+        pl.lit("").alias("motif"), # create empty string column called motif
+        pl.when(                   # conditionally modify the column
+            (pl.col("position").is_in(forward_indices)) & (pl.col("other_column") == "some_condition")
+        ).then(pl.lit(motif_str)).otherwise(pl.col("motif")).alias("motif")
+    )
+
+```
+The syntax takes some getting use to but once you get the hang of it, you will find it much faster.
+
 
 ## 16: [Snakemake](https://snakemake.readthedocs.io/en/stable/) to create automated analysis workflow  (___Rizky___)
 
