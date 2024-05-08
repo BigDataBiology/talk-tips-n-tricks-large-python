@@ -963,3 +963,42 @@ from Bio import SeqIO
 records = SeqIO.parse("test.aln", "fasta")
 count = SeqIO.write(records, "test.phylip", "phylip")
 ```
+
+## 26 Check if the function has finished running （_Chengkai_）
+- If you're going to run a lot of samples, let's first complete one process, then I'd like to string these programs together.
+```
+# Check if the function has finished running
+def ngless():
+	os.system(cmd)
+def semibin2():    
+	os.system(cmd)
+def eggnog():
+	os.system(cmd)
+		
+def exec_function(name, flag='', timeout=60):
+        eval(name)()
+        last_mtime = None
+        has_flag = False
+        if not flag:   # determine whether the target file of the previous program exists
+                return
+        for i in range(timeout):
+                if os.path.exists(flag):
+                        has_flag = True
+                        mtime = os.path.getmtime(flag)
+                        if last_mtime == mtime:
+                                break
+                        else:
+                                last_mtime = mtime     # Whether this file is consistent within 10 seconds before and after.
+                                time.sleep(10)
+                else:
+                        time.sleep(1)
+        if not has_flag:
+                print("Error: function [%s] failed!"%name)
+                exit(-1)
+```
+
+
+
+
+
+
