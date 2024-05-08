@@ -669,7 +669,8 @@ def monte_carlo_pi_calculation(nsamples):
 - Identifies horizontally transferred biogeochemical genes with mobile genetic elements found on the same contig
 - Output file: the BGCs, along with the MGE and corresponding MAG
 - The relative abundance of the BGC gene, MGE e-value and the sequences for both the BGC gene and MGE in the contig
-![Bio_HGT](/Users/jpmakumbi/Downloads/Bio_HGT.png)
+![image](https://github.com/BigDataBiology/talk-tips-n-tricks-large-python/assets/124160719/72ac04c8-b347-40d5-bf5e-a58b85b9cd61)
+
 
 ---
 
