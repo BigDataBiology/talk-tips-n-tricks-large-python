@@ -665,7 +665,7 @@ def monte_carlo_pi_calculation(nsamples):
 
 ---
 
-## 19: Use query() for more efficient filtering of a dataframe (Anna)
+## 19: Use query() for more efficient filtering of a dataframe (_Anna_)
 
 ## Less efficient: Iteration
 
@@ -685,6 +685,9 @@ for index, row in metadata.iterrows():
 
 metadata_filt = pd.DataFrame(filtered_rows)
 ```
+
+---
+
 ## Less efficient: Boolean indexing
 
 - By applying conditions to columns in the DataFrame, it creates boolean arrays. These boolean arrays are then used to select rows from the DataFrame.
@@ -698,6 +701,7 @@ metadata = pd.read_csv('metadata.csv')
 metadata_filt = metadata[metadata['size'] == 'large' & metadata['age'] != 'puppy' & metadata['kg'] > 25]
 ```
 
+---
 ## Better: Use query()
 
 - More concise and readable way to express complex filtering conditions: you provide a boolean expression as a string, which represents the filtering conditions.
