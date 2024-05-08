@@ -663,6 +663,7 @@ def monte_carlo_pi_calculation(nsamples):
 [
 ](https://github.com/Shaedeycool/BioG-HGT_wd/blob/main/workflow_1.png)![image](https://github.com/BigDataBiology/talk-tips-n-tricks-large-python/assets/124160719/fd709d4e-6b96-4894-93e8-323e03889a9d)
 
+---
 
 ## 19: Use query() for more efficient filtering of a dataframe (Anna)
 
