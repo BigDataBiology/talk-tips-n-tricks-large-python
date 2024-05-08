@@ -885,7 +885,7 @@ Say we need to store 4-mers of DNA sequenes
 >>> sys.getsizeof(binary_motif_int8)
 25
 ```
-
+Using binary representation saves about 50% of memory!
 
 
 ___
