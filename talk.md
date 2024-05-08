@@ -738,3 +738,24 @@ def get_species_names_list(all_cluster_files, threads):
         return sorted(list(species_names))
 ```
 ---
+
+---
+## 21: Polars lazy/streaming
+- Use lazy polars to optimise CPU/memory usage (e.g. skip reading column from filter if it is not used)
+- Use polars streaming to analyse data that wont fit in memory
+- Can sink to file when the result wont fit in memory either
+
+```
+# Create lazy query plan
+q1 = (
+    pl.scan_csv("docs/data/iris.csv")
+    .filter(pl.col("sepal_length") > 5)
+    .group_by("species")
+    .agg(pl.col("sepal_width").mean())
+)
+# Collect output df in memory
+df = q1.collect(streaming=True)
+# Or sink output to file
+q1.sink_csv("docs/iris_analysed.csv")
+```
+---
