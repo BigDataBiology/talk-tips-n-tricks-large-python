@@ -910,6 +910,7 @@ In[20]:     %%prun
 
      ....
 ```
+---
 ## 24: Use sys.getsizeof to guide data struction optimization (_Yibi_)
 
 ## Sample infomation,different datatype -> different size 
