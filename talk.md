@@ -953,3 +953,13 @@ Say we need to store 4-mers of DNA sequenes
 Using binary representation saves about 50% of memory!
 
 ___
+
+
+## 25: Use `Bio.SeqIO.write` to convert format (_Yiqian_)
+
+Use `Bio.SeqIO.write` to convert aligned files to PHYLIP, CLUSTAL, or other formats for downstream analysis
+```
+from Bio import SeqIO
+records = SeqIO.parse("test.aln", "fasta")
+count = SeqIO.write(records, "test.phylip", "phylip")
+```
