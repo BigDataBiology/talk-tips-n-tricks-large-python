@@ -507,6 +507,7 @@ Polars is a Rust-based DataFrame library that is much faster and more memory eff
 The syntax is little different but easy to get used to. If you have worked with tidyverse in R, you will find it very similar.
 
 Polars has an elaborate Python API documentation that you can find [here](https://docs.pola.rs/py-polars/html/reference/index.html).
+---
 
 ## 15: Polars example (_Sebastian_)
 Here is a simple example of how to read a csv file, filter rows, and write the result to a new csv file.
@@ -533,7 +534,7 @@ df.write_csv('output.csv')
 
 ---
 ## 15: Polars example 2 (_Sebastian_)
-Here we will conditionally modify a column based on the values of other columns.
+Here we will conditionally modify a column based on the values of another column and an array.
 ```python
 # conditional modification
 forward_indices = pl.Series([1, 2, 3, 4, 5])
@@ -550,7 +551,7 @@ df = df.with_columns(
 ```
 The syntax takes some getting use to but once you get the hang of it, you will find it much faster.
 
-
+---
 ## 16: [Snakemake](https://snakemake.readthedocs.io/en/stable/) to create automated analysis workflow  (___Rizky___)
 
 Snakemake is a workflow management system to create reproducible and scalable data analysis workflow using Python-based language.
