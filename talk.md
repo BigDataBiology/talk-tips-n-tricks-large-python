@@ -958,9 +958,10 @@ Say we need to store 4-mers of DNA sequenes
 >>> sys.getsizeof(binary_motif_int8)
 25
 ```
+
 Using binary representation saves about 50% of memory!
 
-___
+---
 
 
 ## 25: Use `Bio.SeqIO.write` to convert format (_Yiqian_)
@@ -971,6 +972,8 @@ from Bio import SeqIO
 records = SeqIO.parse("test.aln", "fasta")
 count = SeqIO.write(records, "test.phylip", "phylip")
 ```
+
+---
 
 ## 26 Check if the function has finished running （_Chengkai_）
 - If you're going to run a lot of samples, let's first complete one process, then I'd like to string these programs together.
@@ -1029,9 +1032,5 @@ def main():
 
 
 ```
-
-
-
-
 
 
