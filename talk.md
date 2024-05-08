@@ -854,4 +854,50 @@ Modulo operator:   90.98 ms
 .format() method: 144.69 ms
 f_string:          87.08 ms
 ```
-___
+
+---
+
+## 23: Use `%%prun` to profile code in Jupyter notebooks/shell (_Luis_)
+
+This works both in Jupyter and in IPython (Jupyter shell)
+
+1. `%` indicates that you are running a magic single-line command in Jupyter
+2. `%%` indicates that you are running a magic multi-line (or cell) command in Jupyter
+3. `prun` is the command to profile code
+
+## Example
+
+```python
+%%prun
+normalizer = argnorm.DeepARGNormalizer(is_hamronized=hamronized)
+normed = get_normed(normalizer, input_path)
+```
+---
+
+## Output of `%%prun`
+
+```
+In[20]:     %%prun
+            normalizer = argnorm.DeepARGNormalizer(is_hamronized=hamronized)
+            normed = get_normed(normalizer, input_path)
+          1345727 function calls (1345358 primitive calls) in 0.501 seconds
+
+   Ordered by: internal time
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+    26183    0.108    0.000    0.154    0.000 inspect.py:3076(_bind)
+    22472    0.039    0.000    0.064    0.000 meta.py:25(check_type)
+    26183    0.037    0.000    0.296    0.000 meta.py:83(newfunc)
+    13731    0.025    0.000    0.044    0.000 lineage.py:273(_next_id)
+    90597    0.019    0.000    0.019    0.000 {built-in method builtins.getattr}
+        3    0.018    0.006    0.018    0.006 {method 'read_low_memory' of 'pandas._libs.parsers.TextReader' objects}
+     1998    0.014    0.000    0.229    0.000 drug_categorization.py:9(confers_resistance_to)
+   149678    0.014    0.000    0.014    0.000 {built-in method builtins.next}
+    18761    0.012    0.000    0.022    0.000 ontology.py:504(get_term)
+     7924    0.010    0.000    0.018    0.000 __init__.py:382(relationships)
+     3711    0.009    0.000    0.011    0.000 lineage.py:238(__init__)
+
+     ....
+```
+
+
