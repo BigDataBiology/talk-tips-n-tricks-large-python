@@ -765,3 +765,68 @@ extern.run_many(['echo once','echo twice','echo thrice'], progress_stream=sys.st
 ```
 
 ---
+## 22: String formatting with f-strings (_Rossen_)
+Before Python 3.6, the main methods for string interpolation and formatting was through the modulo operator (%) or with the `str.format()` method. While the % operator is quick and simple, it has a few issues that lead to common errors. For example, it is not simple to interpolate tuples into a single variable:
+```python
+>>> "This is a tuple: %s" % (1, 2)
+Traceback (most recent call last):
+    ...
+TypeError: not all arguments converted during string formatting
+```
+While this can be fixed by wrapping the tuple in another single-item tuple i.e.
+```python
+>>> "This is a tuple: %s" % ((1, 2),)
+"This is a tuple: (1, 2)"
+```
+the syntax is a fairly hacky solution. Furthermore, the formatting capabilities for the % operator is quite limited and doesn't support Python's string formatting mini-language.
+The `str.format()` method fixes these issues and also enables specifying the interpolation order with indices and keyword arguments. For example: 
+```python
+>>> "Hello, {name}! You're {age} years old.".format(name="Jane", age=25)
+"Hello, Jane! You're 25 years old."
+```
+You can also use format specifiers:
+```python
+>>> "Balance: ${:.2f}".format(5425.9292)
+'Balance: $5425.93'
+>>> "{:=^30}".format("Centered string")
+'=======Centered string========'
+```
+F-strings, or **formatted string literals** provide an even more intuitive and concise method with all of the same advantages of `.format()`. They can include Python expressions enclosed in curly braces, where Python will evaluate and replace those expressions with their resulting values at runtime. 
+```python
+>>> name = "Jane"
+>>> age = 25
+>>> f"Hello, {name.upper()}! You're {age} years old."
+"Hello, JANE! You're 25 years old."
+>>> f"{[2**n for n in range(3, 9)]}"
+'[8, 16, 32, 64, 128, 256]'
+```
+They are also a bit faster than both the modulo operator and the `.format()` method.
+```python
+# Python 3.85
+# performance.py
+import timeit
+name = "Linda Smith"
+age = 40
+strings = {
+    "Modulo operator": "'Name: %s Age: %s' % (name, age)",
+    ".format() method": "'Name: {} Age: {}'.format(name, age)",
+    "f_string": "f'Name: {name} Age: {age}'",
+}
+def run_performance_test(strings):
+    max_length = len(max(strings, key=len))
+    for tool, string in strings.items():
+        time = timeit.timeit(
+            string,
+            number=1000000,
+            globals=globals()
+        ) * 1000
+        print(f"{tool}: {time:>{max_length - len(tool) + 6}.2f} ms")
+run_performance_test(strings)
+```
+```shell
+$ python performance.py
+Modulo operator:   90.98 ms
+.format() method: 144.69 ms
+f_string:          87.08 ms
+```
+___
